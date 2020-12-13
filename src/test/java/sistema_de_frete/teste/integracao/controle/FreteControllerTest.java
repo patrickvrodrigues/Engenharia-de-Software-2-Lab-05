@@ -53,28 +53,35 @@ public class FreteControllerTest {
 
     @Test
     public void inserirFreteComClienteNuloDeveLancarException() throws FreteException, URISyntaxException {
+        //Manipulação de consulta no BD
         Mockito.when(cidadeRepository.buscaPor(cidade.getNome())).thenReturn(cidade);
         Mockito.when(clienteRepository.buscaPor(cliente.getNome())).thenReturn(null);
 
+        //Teste do Cenário
         frete.setCliente(null);
         NullPointerException exception =
                 Assertions.assertThrows(NullPointerException.class,
                         () -> freteController.inserir(frete),
                         "Deveria lançar um FreteException");
+        //Verificação
         Assertions.assertTrue(exception.getMessage().contains("Cliente não existe"));
 
     }
 
     @Test
     public void inserirFreteComCidadeNuloDeveLancarException() throws FreteException {
+        //Manipulação de consulta no BD
         Mockito.when(cidadeRepository.buscaPor(cidade.getNome())).thenReturn(null);
         Mockito.when(clienteRepository.buscaPor(cliente.getNome())).thenReturn(Optional.of(cliente));
+
+        //Teste de Cenário
         frete.setCidade(null);
         NullPointerException exception =
                 Assertions.assertThrows(NullPointerException.class,
                         () -> freteController.inserir(frete),
                         "Deveria lançar um FreteException");
 
+        //Verificação
         Assertions.assertTrue(exception.getMessage().contains("Cidade não existe"));
 
 
@@ -83,10 +90,11 @@ public class FreteControllerTest {
 
     @Test
     public void inserirFreteComDescricaoNulaDeveLancarException() throws FreteException {
-
+        //Manipulação de consulta no BD
         Mockito.when(cidadeRepository.findById(cidade.getCodigoCidade())).thenReturn(Optional.of(cidade));
         Mockito.when(clienteRepository.findById(cliente.getCodigoCliente())).thenReturn(Optional.of(cliente));
 
+        //Teste de Cenário
         frete.setDescricao(null);
         NullPointerException exception =
                 Assertions.assertThrows(NullPointerException.class,
@@ -94,6 +102,7 @@ public class FreteControllerTest {
 
                         "Deveria lançar um FreteException");
 
+        //Verificação
         Assertions.assertTrue(exception.getMessage().contains("Descrição não existe"));
 
 
@@ -102,11 +111,14 @@ public class FreteControllerTest {
 
     @Test
     public void deveSalvarUmNovoFrete() throws FreteException, URISyntaxException {
+        //Manipulação de consulta no BD
         Mockito.when(cidadeRepository.findById(cidade.getCodigoCidade())).thenReturn(Optional.of(cidade));
         Mockito.when(clienteRepository.findById(cliente.getCodigoCliente())).thenReturn(Optional.of(cliente));
 
+        //Teste de Cenário
         freteController.inserir(frete);
 
+        //Verificação
         Mockito.verify(freteRepository, Mockito.times(1))
                 .save(frete);
     }
@@ -114,8 +126,10 @@ public class FreteControllerTest {
     @Test
     public void deveRemoverFrete() {
 
-
+        //Teste de Cenário
         freteController.remover(1L);
+
+        //Verificação
         Mockito.verify(freteRepository,
                 Mockito.times(1))
                 .deleteById(1L);

@@ -50,7 +50,7 @@ public class FreteRepositoryIntegrationTest {
 
     @BeforeEach
     public void before() {
-
+        //Construção do Cenário
         cliente = ClienteBuilder.umCliente().constroi();
         cliente = clienteRepository.save(cliente);
         cidade = CidadeBuilder.umaCidade().constroi();
@@ -75,43 +75,55 @@ public class FreteRepositoryIntegrationTest {
 
     @Test
     public void saveComClienteNuloDeveLancarException() throws Exception {
+
+        //Teste do Repositório
         ConstraintViolationException exception = assertThrows(ConstraintViolationException.class,
                 () -> {  frete.setCliente(null);
                     freteRepository.save(frete);
                 },
                 "Deveria lançar um ConstraintViolationException");
-
+        //Verificação
         Assertions.assertTrue(exception.getMessage().contains("Deve conter um Cliente"));
     }
 
     @Test
     public void saveComCidadeNulaDeveLancarException() throws Exception {
+        //Teste do Repositório
         ConstraintViolationException exception = assertThrows(ConstraintViolationException.class,
                 () -> {  frete.setCidade(null);
                     freteRepository.save(frete);
                 },
                 "Deveria lançar um ConstraintViolationException");
-
+        //Verificação
         Assertions.assertTrue(exception.getMessage().contains("Deve conter uma Cidade"));
     }
 
     @Test
     public void deveSalvarApenasUmFrete(){
+        //Continuação e preparação do Cenário
         freteRepository.save(frete);
+        //Teste do Repositorio
         List<Frete> fretes = freteRepository.findAll();
+        //Verificacao
         Assertions.assertEquals(1, fretes.size());
+        //Limpeza do BD
         freteRepository.deleteAll();
     }
 
     @Test
     public void deveRemoverUmFrete() {
-
+        //Continuação e preparação do cenário
         freteRepository.save(frete);
+        //Teste do repositorio
         List<Frete> fretes = freteRepository.findAll();
+        //Verificação
         assertEquals(1, fretes.size());
 
+        //Continuacao e preparação do cenário
         freteRepository.deleteById(frete.getCodigoFrete());
+        //Teste do repositorio
         List<Frete> resultado = freteRepository.findAll();
+        //Verificação
         assertEquals(0, resultado.size());
     }
 

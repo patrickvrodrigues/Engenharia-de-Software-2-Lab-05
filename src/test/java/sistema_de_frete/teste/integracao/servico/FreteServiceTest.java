@@ -44,7 +44,7 @@ public class FreteServiceTest {
 
     @BeforeEach
     public void before() {
-
+        //Construção do cenário
         cidade = CidadeBuilder.umaCidade().constroi();
         cidade = cidadeRepository.save(cidade);
         cliente = ClienteBuilder.umCliente().constroi();
@@ -55,64 +55,71 @@ public class FreteServiceTest {
     @Test
     public void insereComClienteNuloDeveLancarException()  {
 
+        //Teste de serviço
         NullPointerException exception = assertThrows(NullPointerException.class,
                 () -> {  frete.setCliente(null);
                     freteService.cadastrarOuAlterar(frete);
                 },
                 "Deveria lançar um NullPointerException");
-
+        //Verificação
         assertTrue(exception.getMessage().contains("Cliente não existe"));
 
     }
 
     @Test
     public void insereComClienteNãoCadastradoDeveLancarException()  {
+        //Continuação e preparação do cenário
         Cliente clienteTest = ClienteBuilder.umCliente().comCodigo(999l).constroi();
         frete.setCliente(clienteTest);
+        //Teste do serviço
         NullPointerException exception = assertThrows(NullPointerException.class,
                 () -> {
                     freteService.cadastrarOuAlterar(frete);
                 },
                 "Deveria lançar um NullPointerException");
-
+        //Verificação
         assertTrue(exception.getMessage().contains("Cliente não encontrado"));
 
     }
 
     @Test
     public void insereComCidadeNulaDeveLancarException()  {
-
+        //Teste do serviço
         NullPointerException exception = assertThrows(NullPointerException.class,
                 () -> {  frete.setCidade(null);
                     freteService.cadastrarOuAlterar(frete);
                 },
                 "Deveria lançar um NullPointerException");
-
+        //Verificação
         assertTrue(exception.getMessage().contains("Cidade não existe"));
 
     }
 
     @Test
     public void insereComCidadeNãoCadastradaDeveLancarException()  {
+        //Continuação e preparação do cenário
         Cidade cidadeTest = CidadeBuilder.umaCidade().comCodigo(999l).constroi();
         frete.setCidade(cidadeTest);
+        //Teste do serviço
         NullPointerException exception = assertThrows(NullPointerException.class,
                 () -> {
                     freteService.cadastrarOuAlterar(frete);
                 },
                 "Deveria lançar um NullPointerException");
-
+        //Verificação
         assertTrue(exception.getMessage().contains("Cidade não encontrada"));
 
     }
 
     @Test
     public void deveSalvarUmNovoFrete()  {
-
+        //Teste do serviço
         freteService.cadastrarOuAlterar(frete);
         List<Frete> fretes = freteRepository.findAll();
 
+        //Verificação
         Assertions.assertEquals(1, fretes.size());
+        //Limpeza do BD
         freteRepository.deleteAll();
     }
 

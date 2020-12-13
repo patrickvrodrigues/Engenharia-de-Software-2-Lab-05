@@ -48,6 +48,7 @@ public class FreteControllerTest {
 
     @BeforeEach
     public void start() {
+        //Construção do Cenário
         freteService = new FreteServiceImp();
         cliente = ClienteBuilder.umCliente().constroi();
         cliente = clienteRepository.save(cliente);
@@ -61,23 +62,28 @@ public class FreteControllerTest {
 
     @AfterEach
     public void end() {
+        //Limpeza do BD
         freteRepository.deleteAll();clienteRepository.deleteAll();cidadeRepository.deleteAll();
     }
 
     @Test
     public void deveMostrarTodosFretes() {
+        //Teste do serviço da api Tipo GET HTTP
         ResponseEntity<String> resposta =
                 testRestTemplate.exchange("/frete/", HttpMethod.GET, null, String.class);
 
         System.out.println("######## " + resposta.getBody() );
+        //Verificação
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
     }
 
     @Test
     public void deveMostrarUmFrete() {
+        //Teste do serviço da api Tipo GET HTTP
         ResponseEntity<Frete> resposta =
                 testRestTemplate.exchange("/frete/{id}",HttpMethod.GET,null, Frete.class,frete.getCodigoFrete() );
 
+        //Verificações
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
         assertEquals(resposta.getHeaders().getContentType(),
                 MediaType.parseMediaType("application/json"));
@@ -87,18 +93,21 @@ public class FreteControllerTest {
     @Test
     public void deveRetornarFreteNaoEncontrado() {
 
+        //Teste do serviço da api Tipo GET HTTP
         ResponseEntity<Frete> resposta =
                 testRestTemplate.exchange("/frete/{id}",HttpMethod.GET,null, Frete.class,50 );
-
+        //Verificações
         assertEquals(HttpStatus.NOT_FOUND, resposta.getStatusCode());
         assertNull(resposta.getBody());
     }
 
     @Test
     public void deveMostrarUmFreteComGetForEntity() {
+        //Teste do serviço da api Tipo GET HTTP
         ResponseEntity<Frete> resposta =
                 testRestTemplate.getForEntity("/frete/{id}", Frete.class,frete.getCodigoFrete());
 
+        //Verificações
         assertEquals(HttpStatus.OK, resposta.getStatusCode());
 
         assertEquals(resposta.getHeaders().getContentType(),
@@ -158,15 +167,16 @@ public class FreteControllerTest {
 
 @Test
     public void naoDeveSalvarFreteComErroDeValidacao() {
+        //Continuação e preparação do cenário
         Frete frete1 = new Frete();
         frete1.setCliente(cliente);
         HttpEntity<Frete> httpEntity = new HttpEntity<>(frete1);
-
+        //Teste do serviço da api Tipo POST HTTP
         ResponseEntity<List<String>> resposta =
                 testRestTemplate.exchange("/frete/inserir",
                         HttpMethod.POST,httpEntity,
                         new ParameterizedTypeReference<List<String>>() {});
-
+        //Verificações
         assertEquals(HttpStatus.BAD_REQUEST,resposta.getStatusCode());
         assertTrue(resposta.getBody().contains("Deve conter uma Cidade"));
         assertTrue(resposta.getBody().contains("O peso deve ser preenchido"));

@@ -47,6 +47,8 @@ public class FreteRepositoryIntegrationQueryTest {
     @BeforeEach
     public void before() {
 
+        //Cenário
+
         cliente = ClienteBuilder.umCliente().constroi();
         cliente = clienteRepository.save(cliente);
         cidade = CidadeBuilder.umaCidade().constroi();
@@ -70,6 +72,7 @@ public class FreteRepositoryIntegrationQueryTest {
 
     @AfterEach
     public void after() {
+        //Limpar o BD
         freteRepository.deleteAll();
         clienteRepository.deleteAll();
         cidadeRepository.deleteAll();
@@ -78,10 +81,15 @@ public class FreteRepositoryIntegrationQueryTest {
 
     @Test
     public void deveBuscarFretesPeloNomeCliente() {
+        //Continuação e Preparação do Cenário
         frete = freteRepository.save(frete);
         frete1 = freteRepository.save(frete1);
         frete2 = freteRepository.save(frete2);
+
+        //Teste do Repositorio
         List<Frete>fretesTeste = freteRepository.buscaPor(cliente);
+
+        //Verificação
         for(Frete freteTeste : fretesTeste){
             Assertions.assertTrue(freteTeste.getCliente().equals(frete.getCliente()));
         }
@@ -90,22 +98,28 @@ public class FreteRepositoryIntegrationQueryTest {
 
     @Test
     public void deveBuscarFretePeloCodigo() {
+        //Continuação e Preparação do Cenário
         frete = freteRepository.save(frete);
         frete1 = freteRepository.save(frete1);
         frete2 = freteRepository.save(frete2);
+        //Teste do Repositorio
         Optional<Frete> freteTeste = freteRepository.buscaPorCodigoFrete(frete.getCodigoFrete());
+        //Verificação
         Assertions.assertTrue(freteTeste.get().equals(frete));
     }
 
     @Test
     public void deveRetornarTodosOsFretesOrdenadosEmOrdemCrescentePorNomeDaCidade()  {
-
+        //Continuação e Preparação do Cenário
         frete = freteRepository.save(frete);
         frete1 = freteRepository.save(frete1);
         frete2 = freteRepository.save(frete2);
         List<Frete> fretes;
+
+        //Teste do repositorio
         fretes = freteRepository.todos( Sort.by("cidade.nome").ascending() );
 
+        //Verificação
         Assertions.assertTrue(fretes.get(0).getCidade().getNome().equals("Belém"));
         Assertions.assertTrue(fretes.get(1).getCidade().getNome().equals("Rio de Janeiro"));
         Assertions.assertTrue(fretes.get(2).getCidade().getNome().equals("São Luis"));
